@@ -1,0 +1,8 @@
+streamlit
+fastapi
+uvicorn[standard]
+pydantic
+pandas
+python-dotenv
+pytest
+httpx

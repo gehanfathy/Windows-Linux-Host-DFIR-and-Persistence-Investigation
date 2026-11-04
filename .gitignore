@@ -1,0 +1,45 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Local collected data
+data/
+evidence/
+collector_queue.jsonl
+
+# Logs
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Test and coverage files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build files
+dist/
+build/
+*.egg-info/

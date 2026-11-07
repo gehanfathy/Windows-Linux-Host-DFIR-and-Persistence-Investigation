@@ -242,3 +242,31 @@ The application must not display a detection without an evidence reference.
 5. Detection results are potential findings and require analyst review.
 6. New fields or event types must be discussed before implementation.
 7. All components must validate data before sending or storing it.
+
+---
+
+## 10. Raw Collector Input — Accepted Aliases
+
+The canonical raw `collection_type` values are the ones below. The parser
+also accepts the alias spellings produced by the original collector delivery
+(`deliveries/windows-collector/`), so evidence from either collector works:
+
+| Source | Canonical `collection_type` | Accepted aliases |
+|---|---|---|
+| Security events | `windows_security_event` | — |
+| Scheduled tasks | `windows_scheduled_tasks` | `windows_scheduled_task` |
+| Services | `windows_services` | `windows_service` |
+| Registry Run keys | `windows_registry_runkeys` | `windows_registry_run`, `windows_registry_run_key` |
+| PowerShell Operational | — | `windows_powershell_event` (metadata-only, skipped) |
+| Sysmon | — | `windows_sysmon_event` (metadata-only, skipped) |
+
+Accepted field aliases:
+
+| Canonical field | Accepted alias | Used by |
+|---|---|---|
+| `data.source_ip` | `data.ip_address` | security events |
+| `name` / `path` / `executable_path` / `run_as` | `task_name` / `task_path` / — / `run_as_user` | scheduled tasks |
+| `command` | `value_data` (with `registry_path` instead of `hive` + `key`) | registry run keys |
+
+New collectors must write the canonical names; the aliases exist so already
+collected evidence stays usable.

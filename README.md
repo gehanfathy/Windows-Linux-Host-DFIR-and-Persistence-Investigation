@@ -27,12 +27,15 @@ API -> dashboard. Linux collector/parser are the next deliverables.
 ```
 collectors/            # Read-only evidence collection (per platform)
   windows/collector.ps1
+deliveries/            # Original module deliveries from team members (reference)
+  windows-collector/   #   first Windows collector delivery + DELIVERY-NOTE.md
 parsers/               # Raw evidence -> NormalizedEvent (Data Contract)
   windows/parser.py
 detection/             # NormalizedEvent -> Findings + IOCs
   windows/rules.py
 sample_data/           # SANITIZED sample evidence (safe for GitHub)
   windows/
+  sanitized/           #   sanitized sample from the collector delivery
 app/                   # FastAPI + SQLite + Streamlit dashboard
   api/main.py          #   /health, /events, /findings, /iocs
   database/db.py       #   tables: cases, events, findings, iocs

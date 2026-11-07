@@ -48,6 +48,22 @@ except Exception:  # graceful fallback if pydantic/app package unavailable
 
 ALLOWED_SEVERITIES = {"low", "medium", "high", "critical"}
 
+# Accepted collection_type values.
+# The canonical names come from docs/DATA_CONTRACT.md; the singular/short
+# aliases are produced by the collector delivery from the Windows-collector
+# owner (deliveries/windows-collector/). Both spellings are accepted so the
+# pipeline works with either collector output.
+TASK_TYPES = {"windows_scheduled_tasks", "windows_scheduled_task"}
+SERVICE_TYPES = {"windows_services", "windows_service"}
+RUNKEY_TYPES = {
+    "windows_registry_runkeys",
+    "windows_registry_run",
+    "windows_registry_run_key",
+}
+# Metadata-only sources (collector delivery): the collector records event
+# metadata but no event data, so there is nothing to normalize yet.
+METADATA_ONLY_TYPES = {"windows_powershell_event", "windows_sysmon_event"}
+
 # Windows Security event IDs -> (normalized event_type, default severity)
 SUPPORTED_SECURITY_EVENT_IDS = {
     4624: ("successful_login", "low"),
@@ -134,7 +150,9 @@ def _security_event_to_event(raw: dict, case_id: str, event_id: str) -> dict:
 
     username = data.get("target_username") or data.get("username") or ""
     subject = data.get("subject_username") or ""
-    source_ip = data.get("source_ip") or ""
+    # "ip_address" is the field name used by the collector delivery
+    # (deliveries/windows-collector/); "source_ip" is the canonical name.
+    source_ip = data.get("source_ip") or data.get("ip_address") or ""
     logon_type = data.get("logon_type")
     group_name = data.get("group_name") or ""
 
@@ -186,13 +204,16 @@ def _security_event_to_event(raw: dict, case_id: str, event_id: str) -> dict:
 
 
 def _task_item_to_event(item: dict, case_id: str, host_id: str, event_id: str) -> dict:
-    name = str(item.get("name") or "").strip()
+    # Canonical format: name/path/actions[{execute, arguments}]/run_as.
+    # Collector-delivery flat format: task_name/task_path/executable_path/
+    # arguments/run_as_user. Both are accepted.
+    name = str(item.get("name") or item.get("task_name") or "").strip()
     if not name:
         raise ValueError("scheduled task without name")
     actions = item.get("actions") or []
     first = actions[0] if actions else {}
-    execute = str(first.get("execute") or "")
-    arguments = str(first.get("arguments") or "")
+    execute = str(first.get("execute") or item.get("executable_path") or "")
+    arguments = str(first.get("arguments") or item.get("arguments") or "")
     return _validate_event({
         "event_id": event_id,
         "case_id": case_id,
@@ -206,10 +227,10 @@ def _task_item_to_event(item: dict, case_id: str, host_id: str, event_id: str) -
         "message": f"Scheduled task '{name}' -> {execute or '(no action)'}",
         "metadata": {
             "task_name": name,
-            "task_path": item.get("path") or "",
+            "task_path": item.get("path") or item.get("task_path") or "",
             "author": item.get("author") or "",
             "status": item.get("status") or "",
-            "run_as": item.get("run_as") or "",
+            "run_as": item.get("run_as") or item.get("run_as_user") or "",
             "action_execute": execute,
             "action_arguments": arguments,
         },
@@ -245,10 +266,19 @@ def _service_item_to_event(item: dict, case_id: str, host_id: str, event_id: str
 
 
 def _runkey_item_to_event(item: dict, case_id: str, host_id: str, event_id: str) -> dict:
+    # Canonical format: hive + key + value_name + command.
+    # Collector-delivery flat format: registry_path + value_name + value_data,
+    # e.g. registry_path = "HKCU:\\Software\\...\\Run".
     hive = str(item.get("hive") or "").strip()
     key = str(item.get("key") or "").strip()
+    if not (hive and key):
+        registry_path = str(item.get("registry_path") or "").strip()
+        if registry_path:
+            hive_part, _, key_part = registry_path.partition(":")
+            hive = hive or hive_part.strip()
+            key = key or key_part.lstrip("\\").strip()
     value_name = str(item.get("value_name") or "").strip()
-    command = str(item.get("command") or "")
+    command = str(item.get("command") or item.get("value_data") or "")
     if not (hive and key and value_name):
         raise ValueError("run key entry missing hive/key/value_name")
     reference = f"{hive}\\{key}:{value_name}"
@@ -332,12 +362,16 @@ def _normalize_record(location: str, ctype: str, raw: dict,
         host_id = str(raw.get("host_id") or default_host or "").strip()
         if ctype == "windows_security_event":
             event = _security_event_to_event(raw, case_id, f"evt-win-{counter:06d}")
-        elif ctype == "windows_scheduled_tasks":
+        elif ctype in TASK_TYPES:
             event = _task_item_to_event(raw, case_id, host_id, f"evt-win-{counter:06d}")
-        elif ctype == "windows_services":
+        elif ctype in SERVICE_TYPES:
             event = _service_item_to_event(raw, case_id, host_id, f"evt-win-{counter:06d}")
-        elif ctype == "windows_registry_runkeys":
+        elif ctype in RUNKEY_TYPES:
             event = _runkey_item_to_event(raw, case_id, host_id, f"evt-win-{counter:06d}")
+        elif ctype in METADATA_ONLY_TYPES:
+            raise ValueError(
+                f"metadata-only record ({ctype}: no event data collected) - skipped"
+            )
         elif ctype == "__unknown__":
             raise ValueError("missing collection_type")
         else:

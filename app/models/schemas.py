@@ -52,6 +52,7 @@ class NormalizedFinding(BaseModel):
     status: FindingStatus = "unverified"
     evidence_reference: str = Field(..., min_length=1)
     mitre_technique: str | None = None
+    related_evidence: list[str] = Field(default_factory=list)
 
 
 class NormalizedIOC(BaseModel):

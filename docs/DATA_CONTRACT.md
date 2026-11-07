@@ -81,9 +81,13 @@ service_created
 scheduled_task_created
 cron_modified
 ssh_key_modified
+audit_log_cleared
 ```
 
 New event types must be documented before implementation.
+
+`audit_log_cleared` maps to Windows Security event 1102 (The audit log
+was cleared) and to equivalent Linux log-rotation tampering events.
 
 ---
 
@@ -148,6 +152,11 @@ inconclusive
 ```
 
 The `mitre_technique` field is optional.
+
+An optional `related_evidence` array of evidence references may be added
+to a finding (for example, all failed-logon records that form one brute
+force burst). It is extra context for the analyst and never replaces
+`evidence_reference`.
 
 ---
 

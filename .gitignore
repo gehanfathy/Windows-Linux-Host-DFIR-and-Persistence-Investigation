@@ -21,6 +21,7 @@ __pycache__/
 # Local collected data
 data/
 evidence/
+output/
 collector_queue.jsonl
 
 # Logs

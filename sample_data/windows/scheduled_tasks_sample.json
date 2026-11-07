@@ -1,0 +1,49 @@
+{
+  "collection_type": "windows_scheduled_tasks",
+  "host_id": "WIN-LAB-01",
+  "collected_at": "2026-11-05T10:00:00Z",
+  "items": [
+    {
+      "name": "GoogleUpdateTaskMachineCore",
+      "path": "\\",
+      "author": "Google LLC",
+      "status": "Ready",
+      "run_as": "S-1-5-18 (SYSTEM)",
+      "task_file": "\\GoogleUpdateTaskMachineCore",
+      "actions": [
+        {
+          "execute": "C:\\Program Files (x86)\\Google\\Update\\GoogleUpdate.exe",
+          "arguments": "/ua /installsource scheduler"
+        }
+      ]
+    },
+    {
+      "name": "SystemHealthUpdater",
+      "path": "\\",
+      "author": "",
+      "status": "Ready",
+      "run_as": "S-1-5-18 (SYSTEM)",
+      "task_file": "\\SystemHealthUpdater",
+      "actions": [
+        {
+          "execute": "C:\\Windows\\Temp\\svchost32.exe",
+          "arguments": "-b -q"
+        }
+      ]
+    },
+    {
+      "name": "NightlyBackup",
+      "path": "\\",
+      "author": "labadmin",
+      "status": "Ready",
+      "run_as": "LAB\\labadmin",
+      "task_file": "\\NightlyBackup",
+      "actions": [
+        {
+          "execute": "C:\\Scripts\\backup.ps1",
+          "arguments": "-Quiet"
+        }
+      ]
+    }
+  ]
+}

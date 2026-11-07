@@ -1,0 +1,25 @@
+{
+  "collection_type": "windows_registry_runkeys",
+  "host_id": "WIN-LAB-01",
+  "collected_at": "2026-11-05T10:00:00Z",
+  "items": [
+    {
+      "hive": "HKLM",
+      "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "value_name": "SecurityHealth",
+      "command": "C:\\Windows\\System32\\SecurityHealthSystray.exe"
+    },
+    {
+      "hive": "HKCU",
+      "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "value_name": "OneDrive",
+      "command": "\"C:\\Users\\labuser\\AppData\\Local\\Microsoft\\OneDrive\\OneDrive.exe\" /background"
+    },
+    {
+      "hive": "HKCU",
+      "key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+      "value_name": "SysTray",
+      "command": "C:\\Users\\labuser\\AppData\\Roaming\\systray.exe"
+    }
+  ]
+}

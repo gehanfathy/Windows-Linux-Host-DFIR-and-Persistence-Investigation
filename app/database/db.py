@@ -65,6 +65,7 @@ def init_db() -> None:
                 status TEXT NOT NULL DEFAULT 'unverified',
                 evidence_reference TEXT NOT NULL,
                 mitre_technique TEXT,
+                related_evidence_json TEXT,
                 created_at TEXT NOT NULL
             );
 
@@ -82,3 +83,11 @@ def init_db() -> None:
             );
             """
         )
+
+        # Migration for databases created before the related_evidence field
+        try:
+            connection.execute(
+                "ALTER TABLE findings ADD COLUMN related_evidence_json TEXT"
+            )
+        except sqlite3.OperationalError:
+            pass  # column already exists

@@ -1,0 +1,31 @@
+{
+  "collection_type": "windows_services",
+  "host_id": "WIN-LAB-01",
+  "collected_at": "2026-11-05T10:00:00Z",
+  "items": [
+    {
+      "name": "WinDefend",
+      "display_name": "Microsoft Defender Antivirus Service",
+      "status": "Running",
+      "start_type": "Auto",
+      "account": "LocalSystem",
+      "binary_path": "C:\\ProgramData\\Microsoft\\Windows Defender\\Platform\\4.18.24090.11-0\\MsMpEng.exe"
+    },
+    {
+      "name": "Spooler",
+      "display_name": "Print Spooler",
+      "status": "Running",
+      "start_type": "Auto",
+      "account": "LocalSystem",
+      "binary_path": "C:\\Windows\\System32\\spoolsv.exe"
+    },
+    {
+      "name": "UpdateHelper",
+      "display_name": "Update Helper",
+      "status": "Running",
+      "start_type": "Auto",
+      "account": "LocalSystem",
+      "binary_path": "C:\\Users\\Public\\updater.exe"
+    }
+  ]
+}

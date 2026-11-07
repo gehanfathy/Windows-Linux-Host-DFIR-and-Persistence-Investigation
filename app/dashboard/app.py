@@ -20,19 +20,27 @@ st.set_page_config(
 )
 
 
-def fetch_events() -> list[dict]:
+def fetch_json(path: str) -> list[dict]:
     """
-    Fetch events from the FastAPI backend.
+    Fetch a JSON list from the FastAPI backend.
     """
 
     request = Request(
-        f"{API_URL}/events",
+        f"{API_URL}{path}",
         headers={"Accept": "application/json"},
         method="GET",
     )
 
     with urlopen(request, timeout=10) as response:
         return json.loads(response.read().decode("utf-8"))
+
+
+def fetch_events() -> list[dict]:
+    """
+    Fetch events from the FastAPI backend.
+    """
+
+    return fetch_json("/events")
 
 
 st.title("DFIR Investigation Dashboard")
@@ -135,3 +143,81 @@ except URLError:
 
 except Exception as error:
     st.error(f"Unexpected error: {error}")
+
+# ---------------------------------------------------------------
+# Findings section (detection output, analyst review required)
+# ---------------------------------------------------------------
+
+st.subheader("Potential Findings")
+st.caption(
+    "All findings are produced by detection rules with status "
+    "'unverified' and require analyst review. They are not a final "
+    "compromise verdict."
+)
+
+try:
+    findings = fetch_json("/findings")
+
+    if findings:
+        col5, col6, col7 = st.columns(3)
+        col5.metric("Total Findings", len(findings))
+        col6.metric(
+            "Unverified",
+            sum(f.get("status") == "unverified" for f in findings),
+        )
+        col7.metric(
+            "High/Critical",
+            sum(f.get("severity") in {"high", "critical"} for f in findings),
+        )
+
+        findings_frame = pd.DataFrame(findings)
+
+        finding_columns = [
+            "finding_id",
+            "rule_id",
+            "severity",
+            "status",
+            "host_id",
+            "title",
+            "evidence_reference",
+            "mitre_technique",
+        ]
+
+        existing_finding_columns = [
+            column
+            for column in finding_columns
+            if column in findings_frame.columns
+        ]
+
+        st.dataframe(
+            findings_frame[existing_finding_columns],
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.subheader("Finding Details")
+
+        selected_finding_id = st.selectbox(
+            "Choose a Finding",
+            options=[
+                finding["finding_id"]
+                for finding in findings
+            ],
+        )
+
+        selected_finding = next(
+            finding
+            for finding in findings
+            if finding["finding_id"] == selected_finding_id
+        )
+
+        st.json(selected_finding)
+
+    else:
+        st.info(
+            "No findings found. Detection output appears here after "
+            "POST /findings."
+        )
+
+except Exception as error:
+    st.warning(f"Findings unavailable: {error}")

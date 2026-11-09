@@ -1,0 +1,44 @@
+{
+  "source_name": "syslog",
+  "collection_type": "linux_syslog",
+  "host_id": "LINUX-LAB-01",
+  "collected_at": "2026-11-04T10:30:00Z",
+  "status": "collected",
+  "sources": [
+    "/var/log/syslog"
+  ],
+  "source": "/var/log/syslog",
+  "record_count": 6,
+  "records": [
+    {
+      "line_no": 1,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 09:58:01 LINUX-LAB-01 CRON[1901]: (root) CMD (/opt/scripts/backup.sh)"
+    },
+    {
+      "line_no": 2,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 10:00:30 LINUX-LAB-01 systemd[1]: Started Daily apt download activities."
+    },
+    {
+      "line_no": 3,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 10:12:44 LINUX-LAB-01 systemd[1]: Reloading OpenBSD Secure Shell server."
+    },
+    {
+      "line_no": 4,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 10:13:02 LINUX-LAB-01 kernel: [ 8210.331] audit: type=1400 apparmor=ALLOWED"
+    },
+    {
+      "line_no": 5,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 10:22:15 LINUX-LAB-01 CRON[2488]: (root) CMD (/tmp/system_update.sh)"
+    },
+    {
+      "line_no": 6,
+      "source": "/var/log/syslog",
+      "message": "Nov  4 10:25:00 LINUX-LAB-01 systemd[1]: session-4.scope: Deactivated successfully."
+    }
+  ]
+}

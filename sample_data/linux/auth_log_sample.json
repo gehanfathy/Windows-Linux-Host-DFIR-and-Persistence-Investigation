@@ -1,0 +1,74 @@
+{
+  "source_name": "auth_log",
+  "collection_type": "linux_auth_log",
+  "host_id": "LINUX-LAB-01",
+  "collected_at": "2026-11-04T10:30:00Z",
+  "status": "collected",
+  "sources": [
+    "/var/log/auth.log"
+  ],
+  "source": "/var/log/auth.log",
+  "record_count": 12,
+  "records": [
+    {
+      "line_no": 1,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:14:55 LINUX-LAB-01 sshd[2214]: Failed password for invalid user admin from 203.0.113.55 port 44578 ssh2"
+    },
+    {
+      "line_no": 2,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:15:02 LINUX-LAB-01 sshd[2214]: Failed password for invalid user admin from 203.0.113.55 port 44590 ssh2"
+    },
+    {
+      "line_no": 3,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:15:09 LINUX-LAB-01 sshd[2214]: Failed password for invalid user admin from 203.0.113.55 port 44602 ssh2"
+    },
+    {
+      "line_no": 4,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:15:16 LINUX-LAB-01 sshd[2214]: Failed password for root from 203.0.113.55 port 44614 ssh2"
+    },
+    {
+      "line_no": 5,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:15:21 LINUX-LAB-01 sshd[2214]: Failed password for root from 203.0.113.55 port 44626 ssh2"
+    },
+    {
+      "line_no": 6,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:16:01 LINUX-LAB-01 sshd[2214]: Accepted password for labuser from 203.0.113.55 port 44641 ssh2"
+    },
+    {
+      "line_no": 7,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:16:01 LINUX-LAB-01 sshd[2214]: pam_unix(sshd:session): session opened for user labuser by (uid=0)"
+    },
+    {
+      "line_no": 8,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:17:44 LINUX-LAB-01 sudo: labuser : TTY=pts/0 ; PWD=/home/labuser ; USER=root ; COMMAND=/usr/sbin/useradd -m svc_update"
+    },
+    {
+      "line_no": 9,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:18:02 LINUX-LAB-01 useradd[2450]: new user: name=svc_update, UID=1002, GID=1002, home=/home/svc_update, shell=/bin/sh, from=none"
+    },
+    {
+      "line_no": 10,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:19:10 LINUX-LAB-01 sudo: labuser : TTY=pts/0 ; PWD=/home/labuser ; USER=root ; COMMAND=/usr/sbin/usermod -aG sudo svc_update"
+    },
+    {
+      "line_no": 11,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:21:07 LINUX-LAB-01 sshd[2501]: Accepted password for svc_update from 203.0.113.55 port 44712 ssh2"
+    },
+    {
+      "line_no": 12,
+      "source": "/var/log/auth.log",
+      "message": "Nov  4 10:23:36 LINUX-LAB-01 sudo: labuser : TTY=pts/0 ; PWD=/var/log ; USER=root ; COMMAND=/usr/bin/journalctl --vacuum-time=1s"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "source_name": "ssh_metadata",
+  "collection_type": "linux_ssh_metadata",
+  "host_id": "LINUX-LAB-01",
+  "collected_at": "2026-11-04T10:30:00Z",
+  "status": "collected",
+  "sources": [
+    "/etc/ssh/sshd_config",
+    "/home/labuser/.ssh/authorized_keys"
+  ],
+  "source": "/etc/ssh/sshd_config",
+  "record_count": 4,
+  "records": [
+    {
+      "line_no": 52,
+      "source": "/etc/ssh/sshd_config",
+      "message": "PermitRootLogin no"
+    },
+    {
+      "line_no": 64,
+      "source": "/etc/ssh/sshd_config",
+      "message": "PubkeyAuthentication yes"
+    },
+    {
+      "line_no": 78,
+      "source": "/etc/ssh/sshd_config",
+      "message": "PasswordAuthentication yes"
+    },
+    {
+      "line_no": 1,
+      "source": "/home/labuser/.ssh/authorized_keys",
+      "message": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleKeyMaterialForLabOnly labuser@lab-laptop"
+    }
+  ]
+}

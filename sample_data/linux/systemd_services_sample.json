@@ -1,0 +1,35 @@
+{
+  "source_name": "systemd_services",
+  "collection_type": "linux_systemd_services",
+  "host_id": "LINUX-LAB-01",
+  "collected_at": "2026-11-04T10:30:00Z",
+  "status": "collected",
+  "sources": [
+    "/usr/lib/systemd/system/ssh.service"
+  ],
+  "source": "/usr/lib/systemd/system/ssh.service",
+  "record_count": 4,
+  "records": [
+    {
+      "line_no": 1,
+      "source": "/usr/lib/systemd/system/ssh.service",
+      "message": "ssh.service: OpenBSD Secure Shell server"
+    },
+    {
+      "line_no": 1,
+      "source": "/usr/lib/systemd/system/cron.service",
+      "message": "cron.service: Regular background program processing daemon"
+    },
+    {
+      "line_no": 1,
+      "source": "/etc/systemd/system/system-update.service",
+      "message": "system-update.service: (no description)"
+    },
+    {
+      "line_no": 1,
+      "source": "/usr/lib/systemd/system/auditd.service",
+      "message": "auditd.service: Security Auditing Service"
+    }
+  ],
+  "method": "file-scan"
+}

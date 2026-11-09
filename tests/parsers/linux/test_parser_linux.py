@@ -271,3 +271,54 @@ def test_naive_collected_at_is_rejected(tmp_path):
     events, warnings = lp.parse_directory(tmp_path)
     assert events == []
     assert any("no timestamp available" in warning for warning in warnings)
+
+
+def test_ipv6_loopback_failed_logins_reach_detection(tmp_path):
+    """Regression (found during LINUX-COLLECT-TEST-001 on Kali).
+
+    'ssh user@localhost' usually connects over the IPv6 loopback, so sshd
+    logs 'Failed password ... from ::1'. The parser must still classify
+    these lines as failed_login events with the IPv6 source_ip, and
+    LINUX-AUTH-001 must fire for a burst of attempts from ::1.
+    """
+    records = []
+    port = 51000
+    minute, second = 40, 0
+    for _ in range(9):
+        records.append({
+            "line_no": len(records) + 1,
+            "source": "/var/log/auth.log",
+            "message": (
+                f"Nov 10 00:{minute:02d}:{second:02d} kali sshd[5000]: "
+                f"Failed password for invalid user labtest from ::1 "
+                f"port {port} ssh2"
+            ),
+        })
+        port += 1
+        second += 18
+        if second >= 60:
+            minute, second = minute + 1, second - 60
+    payload = {
+        "collection_type": "linux_auth_log",
+        "host_id": "LINUX-LAB-01",
+        "collected_at": "2026-11-10T03:45:00Z",
+        "status": "collected",
+        "records": records,
+    }
+    (tmp_path / "auth_log.json").write_text(
+        json.dumps(payload), encoding="utf-8")
+
+    events, warnings = lp.parse_directory(tmp_path)
+    failed = [e for e in events if e["event_type"] == "failed_login"]
+    assert len(failed) == 9, (
+        "IPv6 loopback attempts must be classified as failed_login")
+    assert all(e["metadata"]["source_ip"] == "::1" for e in failed)
+    assert all(e["metadata"]["invalid_user"] for e in failed)
+
+    from detection.linux import rules
+    findings, iocs = rules.run_detection(events, case_id="case-000001")
+    assert any(f["rule_id"] == "LINUX-AUTH-001" for f in findings)
+    assert any(
+        ioc["ioc_type"] == "ip_address" and ioc["value"] == "::1"
+        for ioc in iocs
+    )

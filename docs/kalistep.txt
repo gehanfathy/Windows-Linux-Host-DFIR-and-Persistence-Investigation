@@ -1,0 +1,24 @@
+add data in kali :- 
+1-python3 --version
+2-git clone -b develop https://github.com/gehanfathy/Windows-Linux-Host-DFIR-and-Persistence-Investigation.git DFIR
+3-cd DFIR
+ls
+echo "deb http://kali.download/kali kali-rolling main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list
+deb http://kali.download/kali kali-rolling main contrib non-free non-free-firmware
+
+4-sudo apt update  ,   sudo apt install -y openssh-server rsyslog python3-pip
+5-ls -la /var/log/auth.log
+6- عدد السطور "قبل" التجربة      
+wc -l /var/log/auth.log
+3
+-------3 محاولات اختراق وهمية
+1-ssh labtest@localhost  (Connection refused) -->sudo systemctl enable --now ssh --> ssh
+9 محاولات فاشلة
+wc -l /var/log/auth.log ---> 38
+sudo python3 collectors/linux/collector.py --host-id LINUX-LAB-01
+grep -o "Failed password" output/linux/auth_log.json | wc      --- 9
+---------------
+2-
+
+
+2-

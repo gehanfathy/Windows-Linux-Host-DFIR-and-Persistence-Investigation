@@ -190,13 +190,19 @@ def _event_timestamp(message: str, collected_at: Any) -> datetime:
 # per-source normalization
 # ---------------------------------------------------------------------------
 
+# Source IP group accepts IPv4 dotted quads AND IPv6 addresses ("::1",
+# "::ffff:127.0.0.1", "fe80::...") — sshd logs whatever family the client
+# used, and 'ssh user@localhost' typically connects over IPv6 loopback.
+_IP_TOKEN = r"([0-9A-Fa-f:.]+)"
 _FAILED_RE = re.compile(
     r"Failed password for (?:invalid user )?(\S+) from "
-    r"(\d+\.\d+\.\d+\.\d+) port (\d+)"
+    + _IP_TOKEN
+    + r" port (\d+)"
 )
 _ACCEPTED_RE = re.compile(
     r"Accepted (password|publickey) for (\S+) from "
-    r"(\d+\.\d+\.\d+\.\d+) port (\d+)"
+    + _IP_TOKEN
+    + r" port (\d+)"
 )
 _SUDO_RE = re.compile(r"sudo(?:\[\d+\])?:\s+(\S+)\s+:.*?COMMAND=(.*)$")
 _USERADD_RE = re.compile(r"useradd\[\d+\]:\s+new user: name=([^,;\s]+)")

@@ -87,7 +87,26 @@ audit_log_cleared
 New event types must be documented before implementation.
 
 `audit_log_cleared` maps to Windows Security event 1102 (The audit log
-was cleared) and to equivalent Linux log-rotation tampering events.
+was cleared) and to equivalent Linux log-rotation tampering events
+(for example `sudo journalctl --vacuum`).
+
+### Linux event types
+
+The Linux parser additionally uses these documented event types:
+
+```text
+session_opened      # PAM session opened (auth.log)
+sudo_command        # sudo COMMAND= execution (auth.log)
+auth_event          # any other auth.log line kept as context evidence
+system_log          # generic /var/log/syslog line
+service_metadata    # systemd unit name + description snapshot
+ssh_config_event    # sshd_config option/value snapshot
+```
+
+Snapshot sources (cron rules, systemd units, sshd_config,
+authorized_keys) are point-in-time collections: their event timestamp
+is the collector's `collected_at`. Syslog-style lines carry their own
+log date (interpreted as UTC, year taken from `collected_at`).
 
 ---
 
@@ -259,6 +278,20 @@ also accepts the alias spellings produced by the original collector delivery
 | Registry Run keys | `windows_registry_runkeys` | `windows_registry_run`, `windows_registry_run_key` |
 | PowerShell Operational | — | `windows_powershell_event` (metadata-only, skipped) |
 | Sysmon | — | `windows_sysmon_event` (metadata-only, skipped) |
+
+### Linux collector input (collectors/linux/collector.py)
+
+| Source | Canonical `collection_type` | Accepted aliases |
+|---|---|---|
+| Authentication log | `linux_auth_log` | `linux_auth` |
+| System log | `linux_syslog` | `linux_system_log` |
+| Cron files | `linux_cron` | — |
+| Systemd services | `linux_systemd_services` | `linux_systemd` |
+| SSH metadata | `linux_ssh_metadata` | `linux_ssh` |
+
+The Linux collector also writes `collection_summary.json`; the parser
+skips it (it is an audit record, not evidence). Source files with a
+`status` other than `collected` produce a warning and no events.
 
 Accepted field aliases:
 

@@ -1,0 +1,4 @@
+Nov  4 10:15:00 server sshd[1234]: Failed password for admin from 192.168.1.20 port 22 ssh2
+Nov  4 10:16:00 server sshd[1235]: Accepted password for ahmed from 192.168.1.30 port 22 ssh2
+Nov  4 10:17:00 server sshd[1236]: Invalid user hacker from 192.168.1.40 port 22
+Nov  4 10:18:00 server sudo[1237]: ahmed : TTY=pts/0 ; COMMAND=/usr/bin/id

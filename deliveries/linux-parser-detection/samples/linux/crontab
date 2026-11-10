@@ -1,0 +1,11 @@
+# Normal cron job
+*/5 * * * * root /usr/bin/backup.sh
+
+# Suspicious path for analyst review
+* * * * * root /tmp/script.sh
+
+# Another normal job
+0 2 * * * root /usr/bin/updatedb
+
+# Temporary directory command
+@reboot root /bin/bash /dev/shm/startup.sh

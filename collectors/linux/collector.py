@@ -97,6 +97,11 @@ def read_lines_with_numbers(path: str | Path, max_lines: int = 500) -> list[dict
 
 def _safe_read(path: str | Path, max_lines: int) -> tuple[list[dict], str | None]:
     """read_lines_with_numbers but converts errors into a reason string."""
+    # A directory must be rejected before opening it: Linux raises
+    # IsADirectoryError (an OSError) but Windows raises PermissionError,
+    # which would otherwise be misreported as a permission problem.
+    if os.path.isdir(path):
+        return [], "read error: path is a directory, not a file"
     try:
         return read_lines_with_numbers(path, max_lines), None
     except FileNotFoundError:
